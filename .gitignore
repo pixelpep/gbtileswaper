@@ -1,0 +1,15 @@
+# Local editor / IDE config
+.vscode/
+.claude/
+
+# macOS
+.DS_Store
+
+# Archives and builds
+_archive/
+*.zip
+
+# Test/dev files
+scnlab.gbts
+ui_raw.js
+gbts.htm
