@@ -137,13 +137,15 @@
             },
 
             reload(imageNumber) {
-                const input = imageNumber === 1
-                    ? document.getElementById('builderImage1Input')
-                    : document.getElementById('builderImage2Input');
-                if (input.files && input.files[0]) {
-                    ImageManager.load(input.files[0], imageNumber);
-                    showToast(`Image ${imageNumber === 1 ? 'LEVEL.PNG' : 'TILESET.PNG'} reloaded`);
-                }
+                const img = imageNumber === 1 ? activeSet.image1 : activeSet.image2;
+                if (!img) return;
+                const canvas = imageNumber === 1 ? activeSet.canvas1 : activeSet.canvas2;
+                const ctx    = imageNumber === 1 ? activeSet.ctx1    : activeSet.ctx2;
+                canvas.width  = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+                if (imageNumber === 1) builderRedrawSelections();
+                showToast(`Image ${imageNumber === 1 ? 'LEVEL.PNG' : 'TILESET.PNG'} reloaded`);
             },
 
             updateLayout() {
@@ -2047,6 +2049,62 @@
                 }
                 restoreFromSet(activeSetIndex);
                 applySetSwitch();
+
+                // ── Open the correct sections based on loaded content ──────────────
+                {
+                    const hasGroups    = engineState.groups && engineState.groups.length > 0;
+                    const hasSequences = sequences && sequences.length > 0;
+
+                    if (hasGroups) {
+                        document.getElementById('builderCodeSection').classList.remove('hidden');
+                    }
+
+                    if (hasSequences) {
+                        // Has sequences → close Images + Groups, open Sequences + Preview
+                        document.getElementById('imagesSection').style.display    = 'none';
+                        document.getElementById('imagesTab').style.background     = '#000';
+                        document.getElementById('imagesTab').style.color          = '#00ff00';
+
+                        document.getElementById('groupsSection').style.display    = 'none';
+                        document.getElementById('groupsTab').style.background     = '#000';
+                        document.getElementById('groupsTab').style.color          = '#04d9ff';
+
+                        const seqTab = document.getElementById('sequencesTab');
+                        seqTab.style.display                                      = '';  // show tab button
+                        document.getElementById('sequencesSection').style.display = 'block';
+                        seqTab.style.background                                   = '#FF13F0';
+                        seqTab.style.color                                        = '#000';
+
+                        document.getElementById('builderSequencerSection').classList.remove('hidden');
+
+                        document.getElementById('previewSection').style.display   = 'block';
+                        document.getElementById('previewTab').style.background    = '#FF13F0';
+                        document.getElementById('previewTab').style.color         = '#000';
+
+                        setTimeout(() => {
+                            initPreviewCanvas();
+                            previewLevelImage = activeSet.image1;
+                            if (previewLevelImage) {
+                                previewCanvas.width  = previewLevelImage.width;
+                                previewCanvas.height = previewLevelImage.height;
+                                previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+                                previewCtx.drawImage(previewLevelImage, 0, 0);
+                                document.getElementById('previewInfoText').textContent =
+                                    'Level image loaded - Click PREVIEW on a Swap or Sequence';
+                            }
+                        }, 100);
+                    } else if (hasGroups) {
+                        // Has groups but no sequences → keep Images open, open Groups
+                        document.getElementById('groupsSection').style.display    = 'block';
+                        document.getElementById('groupsTab').style.background     = '#04d9ff';
+                        document.getElementById('groupsTab').style.color          = '#000';
+                    }
+                    // else: no content — imagesSection stays visible (HTML default)
+
+                    updateResizerVisibility();
+                }
+                // ──────────────────────────────────────────────────────────────────
+
                 const setCount = sets.length;
                 showToast(`Project loaded — ${setCount} set${setCount > 1 ? 's' : ''}`);
                 builderFinishLoadTileset();
@@ -4397,6 +4455,9 @@
             // Update ghost text too
             const ghost2 = document.getElementById('builderGhostText2');
             if (ghost2 && !activeSet.image2) ghost2.textContent = setName;
+            // Reset file input so the same file can be re-selected in a different set
+            const img2Input = document.getElementById('builderImage2Input');
+            if (img2Input) img2Input.value = '';
 
             // ── 4. Toggle button visual state ────────────────────────────────────
             function applyToggleStyle(id, active) {
