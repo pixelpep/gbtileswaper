@@ -1004,7 +1004,6 @@
             } else {
                 showToast(`Swap "${groupName}" added (${totalFrames} frame${totalFrames > 1 ? 's' : ''})`);
             }
-            if (window.GbtsTracker) GbtsTracker.trackEvent('group_added', { group_count: activeSet.groups.length, frames: totalFrames, mode: activeSet.mode });
         }
         
         
@@ -1102,7 +1101,6 @@
                 builderTilesetCanvas.onmouseleave = () => TilesetManager.clearHighlights();
                 TilesetManager.updateSaveButtons();
                 TilesetManager.refreshPreview();
-                if (window.GbtsTracker) GbtsTracker.trackEvent('tileset_generated', { tile_count: totalUnique, group_count: activeSet.groups.length });
             },
 
             highlightGroup(groupIndex) {
@@ -1639,7 +1637,6 @@
             navigator.clipboard.writeText(code).then(() => {
                 copiedFeedback(event.target);
                 showToast('Swap code copied to clipboard');
-                if (window.GbtsTracker) GbtsTracker.trackEvent('code_copied');
             }).catch(err => {
                 console.error('Failed to copy code:', err);
             });
@@ -1851,7 +1848,6 @@
             URL.revokeObjectURL(url);
             
             console.log('Project saved:', projectName);
-            if (window.GbtsTracker) GbtsTracker.trackEvent('project_save', { group_count: activeSet.groups.length, format: 'gbtiles' });
         }
         
         // Load Project function - restores project state
@@ -1931,7 +1927,6 @@
                     
                 } catch (error) {
                     console.error('Error loading project:', error);
-                    if (window.GbtsTracker) GbtsTracker.trackEvent('project_load_error', { message: String(error) });
                     alert('Failed to load project file. The file may be corrupted or invalid.');
                 }
             };
@@ -2448,7 +2443,6 @@
                     }
                 } catch (error) {
                     console.error('Error parsing GBTS:', error);
-                    if (window.GbtsTracker) GbtsTracker.trackEvent('gbts_parse_error', { message: String(error) });
                     alert('Failed to parse GBTS file: ' + error.message);
                 }
 
@@ -2754,7 +2748,6 @@
                 ? builderTilesetCanvas.toDataURL('image/png') : null;
             const jsonData = buildV2JsonData(tilesetCanvasUrl);
             await saveJsonAsGbts(JSON.stringify(jsonData, null, 2), tilesetName);
-            if (window.GbtsTracker) GbtsTracker.trackEvent('project_save', { group_count: activeSet.groups.length, set_count: sets.length, format: 'gbts' });
         }
 
         // Save Modal Functions
@@ -3121,7 +3114,6 @@
                 renderSetTabs();
 
                 console.log('App reset complete');
-                if (window.GbtsTracker) GbtsTracker.trackEvent('app_reset');
             }
         }
         
@@ -4446,7 +4438,6 @@
             }
 
             const payload = {
-                session_id: window.GbtsTracker ? GbtsTracker.sessionId : 'unknown',
                 type: type,
                 message: message,
                 rating: type === 'rating' ? feedbackSelectedRating : undefined,
@@ -4638,7 +4629,6 @@
             if (idx === getActiveSetIndex()) return;
             if (!switchActiveSet(idx)) return;   // engine does snapshot + restore
             applySetSwitch();
-            if (window.GbtsTracker) GbtsTracker.trackEvent('set_switched', { set_index: idx });
         }
 
         // Render / refresh the set tabs bar.
@@ -4671,7 +4661,6 @@
                         if (!confirm(`Delete "${name}"? All data in this set will be lost.`)) return;
                         removeSet(index);   // engine removes + restores active
                         applySetSwitch();   // rebuild DOM for new active
-                        if (window.GbtsTracker) GbtsTracker.trackEvent('set_removed', { set_count: getSetsList().length });
                     });
                     tab.appendChild(closeBtn);
                 }
@@ -4688,7 +4677,6 @@
             addBtn.addEventListener('click', () => {
                 addSet();          // engine: snapshot current + create new + restore empty
                 applySetSwitch();  // rebuild DOM
-                if (window.GbtsTracker) GbtsTracker.trackEvent('set_added', { set_count: getSetsList().length });
             });
             bar.appendChild(addBtn);
         }
@@ -5419,18 +5407,44 @@
             // Extract source tile pixel data
             const srcData = group.img1Tiles.map(t => extractTile(t.col, t.row));
 
-            // Scan every tile position in the level
+            // Compute offsets of each tile relative to the first (anchor) tile
+            const anchorCol = group.img1Tiles[0].col;
+            const anchorRow = group.img1Tiles[0].row;
+            const offsets   = group.img1Tiles.map(t => ({ dc: t.col - anchorCol, dr: t.row - anchorRow }));
+            const anchorSrc = srcData[0];
+
+            // Scan level for the anchor tile, then verify the full group pattern at each match.
+            // This correctly handles identical-looking tiles within a group and avoids partial matches.
             const mappings = group.img1Tiles.map(() => []);
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
-                    const levelTile = extractTile(c, r);
-                    for (let i = 0; i < srcData.length; i++) {
+                    // Quick anchor check first
+                    const anchorTile = extractTile(c, r);
+                    let anchorMatch = true;
+                    for (let p = 0; p < anchorSrc.length; p++) {
+                        if (anchorTile[p] !== anchorSrc[p]) { anchorMatch = false; break; }
+                    }
+                    if (!anchorMatch) continue;
+
+                    // Anchor matches — verify all other tiles in the group at their relative positions
+                    let groupMatch = true;
+                    for (let i = 1; i < srcData.length; i++) {
+                        const tc = c + offsets[i].dc;
+                        const tr = r + offsets[i].dr;
+                        if (tc < 0 || tc >= cols || tr < 0 || tr >= rows) { groupMatch = false; break; }
+                        const otherTile = extractTile(tc, tr);
                         const src = srcData[i];
-                        let match = true;
                         for (let p = 0; p < src.length; p++) {
-                            if (levelTile[p] !== src[p]) { match = false; break; }
+                            if (otherTile[p] !== src[p]) { groupMatch = false; break; }
                         }
-                        if (match) { mappings[i].push({ col: c, row: r }); break; }
+                        if (!groupMatch) break;
+                    }
+
+                    // Full pattern matched — record all tile positions
+                    if (groupMatch) {
+                        for (let i = 0; i < srcData.length; i++) {
+                            mappings[i].push({ col: c + offsets[i].dc, row: r + offsets[i].dr });
+                        }
                     }
                 }
             }
