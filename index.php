@@ -911,7 +911,6 @@
         </div>
     </div>
 
-    <script src="tracker/tracker.js"></script>
     <script src="engine.js"></script>
     <script src="ui.js"></script>
 
