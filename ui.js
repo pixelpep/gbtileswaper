@@ -1004,6 +1004,7 @@
             } else {
                 showToast(`Swap "${groupName}" added (${totalFrames} frame${totalFrames > 1 ? 's' : ''})`);
             }
+            if (window.GbtsTracker) GbtsTracker.trackEvent('group_added', { group_count: activeSet.groups.length, frames: totalFrames, mode: activeSet.mode });
         }
         
         
@@ -1101,6 +1102,7 @@
                 builderTilesetCanvas.onmouseleave = () => TilesetManager.clearHighlights();
                 TilesetManager.updateSaveButtons();
                 TilesetManager.refreshPreview();
+                if (window.GbtsTracker) GbtsTracker.trackEvent('tileset_generated', { tile_count: totalUnique, group_count: activeSet.groups.length });
             },
 
             highlightGroup(groupIndex) {
@@ -1637,6 +1639,7 @@
             navigator.clipboard.writeText(code).then(() => {
                 copiedFeedback(event.target);
                 showToast('Swap code copied to clipboard');
+                if (window.GbtsTracker) GbtsTracker.trackEvent('code_copied');
             }).catch(err => {
                 console.error('Failed to copy code:', err);
             });
@@ -1848,6 +1851,7 @@
             URL.revokeObjectURL(url);
             
             console.log('Project saved:', projectName);
+            if (window.GbtsTracker) GbtsTracker.trackEvent('project_save', { group_count: activeSet.groups.length, format: 'gbtiles' });
         }
         
         // Load Project function - restores project state
@@ -1927,6 +1931,7 @@
                     
                 } catch (error) {
                     console.error('Error loading project:', error);
+                    if (window.GbtsTracker) GbtsTracker.trackEvent('project_load_error', { message: String(error) });
                     alert('Failed to load project file. The file may be corrupted or invalid.');
                 }
             };
@@ -2443,6 +2448,7 @@
                     }
                 } catch (error) {
                     console.error('Error parsing GBTS:', error);
+                    if (window.GbtsTracker) GbtsTracker.trackEvent('gbts_parse_error', { message: String(error) });
                     alert('Failed to parse GBTS file: ' + error.message);
                 }
 
@@ -2748,6 +2754,7 @@
                 ? builderTilesetCanvas.toDataURL('image/png') : null;
             const jsonData = buildV2JsonData(tilesetCanvasUrl);
             await saveJsonAsGbts(JSON.stringify(jsonData, null, 2), tilesetName);
+            if (window.GbtsTracker) GbtsTracker.trackEvent('project_save', { group_count: activeSet.groups.length, set_count: sets.length, format: 'gbts' });
         }
 
         // Save Modal Functions
@@ -3114,6 +3121,7 @@
                 renderSetTabs();
 
                 console.log('App reset complete');
+                if (window.GbtsTracker) GbtsTracker.trackEvent('app_reset');
             }
         }
         
@@ -4368,6 +4376,110 @@
             }, 1500);
         }
 
+        // ====== FEEDBACK MODAL ======
+
+        const STAR_LABELS = ['', 'Terrible', 'Bad', 'OK', 'Good', 'Excellent'];
+        let feedbackSelectedRating = 0;
+        let feedbackCurrentTab = 'rating';
+
+        function openFeedbackModal() {
+            feedbackSelectedRating = 0;
+            feedbackCurrentTab = 'rating';
+            switchFeedbackTab('rating');
+            document.getElementById('feedbackRatingComment').value = '';
+            document.getElementById('feedbackSuggestionText').value = '';
+            document.getElementById('feedbackBugText').value = '';
+            updateStars(0);
+            document.getElementById('feedbackModal').classList.add('active');
+        }
+
+        function closeFeedbackModal() {
+            document.getElementById('feedbackModal').classList.remove('active');
+        }
+
+        function switchFeedbackTab(type) {
+            feedbackCurrentTab = type;
+            ['rating', 'suggestion', 'bug_report'].forEach(function(t) {
+                document.getElementById('feedbackPanel-' + t).style.display = (t === type) ? '' : 'none';
+                const btn = document.getElementById('feedbackTabBtn-' + t);
+                btn.classList.toggle('feedback-tab-active', t === type);
+            });
+        }
+
+        function updateStars(value) {
+            document.querySelectorAll('#starRating .star').forEach(function(s) {
+                s.classList.toggle('lit', parseInt(s.dataset.value) <= value);
+            });
+            document.getElementById('starLabel').textContent = value ? STAR_LABELS[value] : 'Click to rate';
+        }
+
+        // Star interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('#starRating .star').forEach(function(star) {
+                star.addEventListener('click', function() {
+                    feedbackSelectedRating = parseInt(star.dataset.value);
+                    updateStars(feedbackSelectedRating);
+                });
+                star.addEventListener('mouseenter', function() {
+                    updateStars(parseInt(star.dataset.value));
+                });
+                star.addEventListener('mouseleave', function() {
+                    updateStars(feedbackSelectedRating);
+                });
+            });
+        });
+
+        async function submitFeedback() {
+            const btn = document.getElementById('feedbackSubmitBtn');
+            const type = feedbackCurrentTab;
+
+            let message = '';
+            if (type === 'rating') {
+                if (feedbackSelectedRating === 0) { showToast('Please select a star rating'); return; }
+                message = document.getElementById('feedbackRatingComment').value.trim() || '(no comment)';
+            } else if (type === 'suggestion') {
+                message = document.getElementById('feedbackSuggestionText').value.trim();
+                if (!message) { showToast('Please describe your suggestion'); return; }
+            } else {
+                message = document.getElementById('feedbackBugText').value.trim();
+                if (!message) { showToast('Please describe the bug'); return; }
+            }
+
+            const payload = {
+                session_id: window.GbtsTracker ? GbtsTracker.sessionId : 'unknown',
+                type: type,
+                message: message,
+                rating: type === 'rating' ? feedbackSelectedRating : undefined,
+                browser_info: {
+                    ua: navigator.userAgent.substring(0, 200),
+                    screen: screen.width + 'x' + screen.height,
+                    lang: navigator.language
+                }
+            };
+
+            btn.disabled = true;
+            btn.textContent = 'SENDING...';
+
+            try {
+                const resp = await fetch('/tracker/feedback.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (resp.ok) {
+                    closeFeedbackModal();
+                    showToast('Thanks for your feedback!');
+                } else {
+                    showToast('Error sending feedback. Please try again.');
+                }
+            } catch (e) {
+                showToast('Could not connect. Please try again.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'SEND';
+            }
+        }
+
         // ====== V2 SET MANAGEMENT (UI side) ======
         // Engine functions: snapshotCurrentSet, restoreFromSet, switchActiveSet,
         //                   addSet, removeSet, renameSet — all in engine.js
@@ -4526,6 +4638,7 @@
             if (idx === getActiveSetIndex()) return;
             if (!switchActiveSet(idx)) return;   // engine does snapshot + restore
             applySetSwitch();
+            if (window.GbtsTracker) GbtsTracker.trackEvent('set_switched', { set_index: idx });
         }
 
         // Render / refresh the set tabs bar.
@@ -4558,6 +4671,7 @@
                         if (!confirm(`Delete "${name}"? All data in this set will be lost.`)) return;
                         removeSet(index);   // engine removes + restores active
                         applySetSwitch();   // rebuild DOM for new active
+                        if (window.GbtsTracker) GbtsTracker.trackEvent('set_removed', { set_count: getSetsList().length });
                     });
                     tab.appendChild(closeBtn);
                 }
@@ -4574,6 +4688,7 @@
             addBtn.addEventListener('click', () => {
                 addSet();          // engine: snapshot current + create new + restore empty
                 applySetSwitch();  // rebuild DOM
+                if (window.GbtsTracker) GbtsTracker.trackEvent('set_added', { set_count: getSetsList().length });
             });
             bar.appendChild(addBtn);
         }

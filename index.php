@@ -87,6 +87,7 @@
             </div>
             <div style="display: flex; gap: 8px;">
                 <button class="help-btn" id="resetButton" onclick="resetApp()" title="Reset everything" style="background: #000; color: #ff0066; border: 2px solid #ff0066; font-size: 20px; font-weight: bold; padding: 0; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(255, 0, 102, 0.5); transition: all 0.2s ease;">×</button>
+                <button class="help-btn" id="feedbackButton" onclick="openFeedbackModal()" title="Send feedback" style="background: #000; color: #ffcc00; border: 2px solid #ffcc00; font-size: 16px; font-weight: bold; padding: 0; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(255, 204, 0, 0.3); transition: all 0.2s ease;">♥</button>
                 <button class="help-btn" id="helpButton" onclick="showBuilderInstructions()" title="Help">?</button>
             </div>
         </div>
@@ -865,6 +866,52 @@
     </div>
 
 
+    <!-- Feedback Modal -->
+    <div id="feedbackModal" class="modal-overlay" onclick="closeFeedbackModal()">
+        <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 460px;">
+            <button class="modal-close-x" onclick="closeFeedbackModal()" title="Close">×</button>
+            <div class="modal-header" style="color: #ffcc00; border-bottom-color: #665500;">SEND FEEDBACK</div>
+
+            <!-- Type tabs -->
+            <div class="feedback-tabs">
+                <button class="feedback-tab feedback-tab-active" id="feedbackTabBtn-rating"     onclick="switchFeedbackTab('rating')">★ RATING</button>
+                <button class="feedback-tab"                     id="feedbackTabBtn-suggestion"  onclick="switchFeedbackTab('suggestion')">SUGGESTION</button>
+                <button class="feedback-tab"                     id="feedbackTabBtn-bug_report"  onclick="switchFeedbackTab('bug_report')">BUG REPORT</button>
+            </div>
+
+            <!-- Rating panel -->
+            <div id="feedbackPanel-rating" class="feedback-panel">
+                <div style="text-align: center; padding: 16px 0 8px;">
+                    <div class="star-rating" id="starRating">
+                        <button class="star" data-value="1">★</button>
+                        <button class="star" data-value="2">★</button>
+                        <button class="star" data-value="3">★</button>
+                        <button class="star" data-value="4">★</button>
+                        <button class="star" data-value="5">★</button>
+                    </div>
+                    <div id="starLabel" class="star-label">Click to rate</div>
+                </div>
+                <textarea id="feedbackRatingComment" class="feedback-textarea" placeholder="Optional comment..." maxlength="2000" rows="3"></textarea>
+            </div>
+
+            <!-- Suggestion panel -->
+            <div id="feedbackPanel-suggestion" class="feedback-panel" style="display:none;">
+                <textarea id="feedbackSuggestionText" class="feedback-textarea" placeholder="Describe your feature request or improvement idea..." maxlength="5000" rows="6"></textarea>
+            </div>
+
+            <!-- Bug report panel -->
+            <div id="feedbackPanel-bug_report" class="feedback-panel" style="display:none;">
+                <textarea id="feedbackBugText" class="feedback-textarea" placeholder="Describe the bug: what happened, what you expected, and how to reproduce it..." maxlength="5000" rows="6"></textarea>
+            </div>
+
+            <div style="display: flex; gap: 10px; justify-content: flex-end; padding: 10px 4px 4px;">
+                <button class="modal-close-btn" onclick="closeFeedbackModal()" style="background: #222; color: #888; border-color: #444;">CANCEL</button>
+                <button id="feedbackSubmitBtn" class="modal-close-btn" onclick="submitFeedback()" style="background: #ffcc00; color: #000; border-color: #ffcc00;">SEND</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="tracker/tracker.js"></script>
     <script src="engine.js"></script>
     <script src="ui.js"></script>
 

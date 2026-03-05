@@ -488,6 +488,95 @@
             opacity: 1;
         }
         
+        /* ── Feedback Modal ─────────────────────────────────────────────────── */
+        .feedback-tabs {
+            display: flex;
+            gap: 2px;
+            padding: 8px 4px 4px;
+            border-bottom: 1px solid #333;
+        }
+
+        .feedback-tab {
+            background: #000;
+            color: #666;
+            border: 1px solid #444;
+            padding: 4px 10px;
+            font-size: 9px;
+            font-weight: 600;
+            font-family: 'Source Sans Pro', sans-serif;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 2px;
+            transition: all 0.2s;
+        }
+
+        .feedback-tab:hover {
+            color: #ffcc00;
+            border-color: #ffcc00;
+        }
+
+        .feedback-tab-active {
+            background: #221800;
+            color: #ffcc00;
+            border-color: #ffcc00;
+        }
+
+        .feedback-panel {
+            padding: 8px 4px;
+        }
+
+        .star-rating {
+            display: inline-flex;
+            gap: 4px;
+        }
+
+        .star {
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: #333;
+            cursor: pointer;
+            padding: 0 2px;
+            transition: color 0.15s, text-shadow 0.15s;
+            line-height: 1;
+        }
+
+        .star.lit {
+            color: #ffcc00;
+            text-shadow: 0 0 8px rgba(255, 204, 0, 0.7);
+        }
+
+        .star-label {
+            color: #555;
+            font-size: 10px;
+            margin-top: 6px;
+            height: 14px;
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+
+        .feedback-textarea {
+            width: 100%;
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 2px;
+            color: #cccccc;
+            font-size: 11px;
+            font-family: 'Source Sans Pro', sans-serif;
+            padding: 8px;
+            resize: vertical;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .feedback-textarea:focus {
+            border-color: #ffcc00;
+        }
+
+        .feedback-textarea::placeholder {
+            color: #444;
+        }
+
         /* Group Drag Handle */
         .group-drag-handle {
             cursor: grab;

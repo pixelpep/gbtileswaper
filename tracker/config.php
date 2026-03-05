@@ -6,8 +6,8 @@
 // Database
 define('DB_HOST', '127.0.0.1');
 define('DB_NAME', 'gbtstracker');
-define('DB_USER', 'YOUR_DB_USER');      // ← remplacer
-define('DB_PASS', 'YOUR_DB_PASSWORD');  // ← remplacer
+define('DB_USER', 'gbts');      // ← remplacer
+define('DB_PASS', '0Hdjk6nTTjizs2zLtGYs');  // ← remplacer
 define('DB_PORT', 3306);
 
 // CORS — domaine autorisé à envoyer des données
