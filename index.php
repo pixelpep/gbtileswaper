@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GB TILE SWAPER BUNDLE</title>
+    <title>GB TILE SWAPER</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2300ff00'/%3E%3Cg fill='%23000'%3E%3Crect x='2' y='2' width='2' height='2'/%3E%3Crect x='4' y='2' width='2' height='2'/%3E%3Crect x='6' y='2' width='2' height='2'/%3E%3Crect x='2' y='4' width='2' height='2'/%3E%3Crect x='2' y='6' width='2' height='2'/%3E%3Crect x='2' y='8' width='2' height='2'/%3E%3Crect x='6' y='8' width='2' height='2'/%3E%3Crect x='2' y='10' width='2' height='2'/%3E%3Crect x='4' y='10' width='2' height='2'/%3E%3Crect x='6' y='10' width='2' height='2'/%3E%3C/g%3E%3Cg fill='%23000'%3E%3Crect x='10' y='2' width='2' height='2'/%3E%3Crect x='12' y='2' width='2' height='2'/%3E%3Crect x='10' y='4' width='2' height='2'/%3E%3Crect x='14' y='4' width='2' height='2'/%3E%3Crect x='10' y='6' width='2' height='2'/%3E%3Crect x='12' y='6' width='2' height='2'/%3E%3Crect x='14' y='6' width='2' height='2'/%3E%3Crect x='10' y='8' width='2' height='2'/%3E%3Crect x='14' y='8' width='2' height='2'/%3E%3Crect x='10' y='10' width='2' height='2'/%3E%3Crect x='12' y='10' width='2' height='2'/%3E%3C/g%3E%3Cg fill='%23000'%3E%3Crect x='2' y='18' width='2' height='2'/%3E%3Crect x='4' y='18' width='2' height='2'/%3E%3Crect x='6' y='18' width='2' height='2'/%3E%3Crect x='4' y='20' width='2' height='2'/%3E%3Crect x='4' y='22' width='2' height='2'/%3E%3Crect x='4' y='24' width='2' height='2'/%3E%3C/g%3E%3Cg fill='%23000'%3E%3Crect x='10' y='18' width='2' height='2'/%3E%3Crect x='12' y='18' width='2' height='2'/%3E%3Crect x='10' y='20' width='2' height='2'/%3E%3Crect x='12' y='22' width='2' height='2'/%3E%3Crect x='10' y='24' width='2' height='2'/%3E%3Crect x='12' y='24' width='2' height='2'/%3E%3C/g%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatichi.com" crossorigin>
@@ -89,6 +89,7 @@
                 <button class="help-btn" id="resetButton" onclick="resetApp()" title="Reset everything" style="background: #000; color: #ff0066; border: 2px solid #ff0066; font-size: 20px; font-weight: bold; padding: 0; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(255, 0, 102, 0.5); transition: all 0.2s ease;">×</button>
                 <button class="help-btn" id="feedbackButton" onclick="openFeedbackModal()" title="Send feedback" style="background: #000; color: #ffcc00; border: 2px solid #ffcc00; font-size: 16px; font-weight: bold; padding: 0; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(255, 204, 0, 0.3); transition: all 0.2s ease;">♥</button>
                 <button class="help-btn" id="helpButton" onclick="showBuilderInstructions()" title="Help">?</button>
+                <button class="help-btn" id="tutorialLaunchBtn" onclick="TutorialManager.open('first-swap')" title="Interactive Tutorial" style="background: #110400; color: #ff8800; border: 2px solid #ff8800; box-shadow: 0 0 10px rgba(255,136,0,0.35); font-size: 15px;"><i class="fa fa-graduation-cap"></i></button>
             </div>
         </div>
     </div>
@@ -212,10 +213,8 @@
                         <i class="fa fa-arrows-h"></i>
                     </button>
                     <button class="toggle-btn" id="builderMirrorMode" onclick="toggleMirror(event)"
-                            style="background: #000; color: #04d9ff; border: 2px solid #04d9ff; padding: 4px; font-size: 16px; font-weight: normal; font-family: FontAwesome; border-radius: 2px; cursor: pointer; transition: all 0.2s; line-height: 1; min-width: 28px; height: 28px; box-shadow: none;"
-                            title="Bounce — ping-pong animation in one swap">
-                        <i class="fa fa-exchange"></i>
-                    </button>
+                            style="background: #000; color: #04d9ff; border: 2px solid #04d9ff; padding: 4px; font-size: 13px; font-weight: bold; font-family: 'Source Sans Pro', sans-serif; border-radius: 2px; cursor: pointer; transition: all 0.2s; line-height: 1; min-width: 28px; height: 28px; box-shadow: none; letter-spacing: -2px;"
+                            title="Bounce — ping-pong animation in one swap">◄►</button>
                     <button id="builderBounceDouble" onclick="toggleBounceDouble(event)"
                             style="display: none; background: #000; color: #04d9ff; border: 2px solid #04d9ff; padding: 0 7px; font-size: 11px; font-weight: 700; font-family: 'Source Sans Pro', sans-serif; border-radius: 2px; cursor: pointer; transition: all 0.2s; line-height: 1; height: 28px; box-shadow: none;"
                             title="Bounce ×2 — create 2 separate swaps (_in forward / _out reverse)">
@@ -498,19 +497,33 @@
                             <li>Make <strong>dynamic world changes</strong> (day/night cycles, seasonal changes)</li>
                             <li>Design <strong>multi-frame animations</strong> in FRAME or SPRITE SHEET mode</li>
                             <li>Manage <strong>multiple Sets</strong> of images in one project via the Sets tab system</li>
-                            <li>Save your <strong>entire project</strong> (images + swaps + sequences + sets) in one <strong>.gbts file</strong> and reload it anytime</li>
-                            <li>Generate <strong>ready-to-use code</strong> for the TileSwapper plugin</li>
+                            <li>Save your <strong>entire project</strong> (images + swaps + sets) in one <strong>.gbts file</strong> and reload it anytime</li>
+                            <li>Generate <strong>ready-to-use code</strong> for the <a href="https://github.com/pixelpep/gbtileswaper/releases/" target="_blank" style="color:#04d9ff;">Tile Swaper plugin</a></li>
                         </ul>
                     </div>
 
-                    <div style="background: #000; border: 1px solid #00ff00; border-radius: 2px; padding: 15px;">
+                    <div style="background: #000; border: 1px solid #00ff00; border-radius: 2px; padding: 15px; margin-bottom: 15px;">
+                        <div style="color: #00ff00; font-size: 12px; font-weight: 600; margin-bottom: 8px;">What you need</div>
+                        <div style="color: #00ff00; font-size: 12px; line-height: 1.7;">
+                            • A <strong>Background image</strong> — the PNG used as a scene background in GB Studio<br>
+                            • A <strong>second image</strong> — containing the new tiles to inject into the scene's tileset
+                        </div>
+                    </div>
+
+                    <div style="background: #000; border: 1px solid #00ff00; border-radius: 2px; padding: 15px; margin-bottom: 15px;">
                         <div style="color: #00ff00; font-size: 12px; font-weight: 600; margin-bottom: 8px;">How Easy Is It?</div>
                         <div style="color: #00ff00; font-size: 12px; line-height: 1.7;">
-                            <strong>1.</strong> Load your level image and tileset<br>
-                            <strong>2.</strong> Click and drag to select tiles visually<br>
+                            <strong>1.</strong> Load your background and second image<br>
+                            <strong>2.</strong> Click and drag to select tiles visually on both<br>
                             <strong>3.</strong> Click "Add Swap" to save your selection<br>
-                            <strong>4.</strong> Export your tileset PNG and code<br>
-                            <strong>5.</strong> Use with the <strong>TileSwapper plugin</strong> in GB Studio - Done!
+                            <strong>4.</strong> Export your tileset PNG and TileData code<br>
+                            <strong>5.</strong> Use with the <a href="https://github.com/pixelpep/gbtileswaper/releases/" target="_blank" style="color:#04d9ff;"><strong>Tile Swaper plugin</strong></a> in GB Studio — Done!
+                        </div>
+                    </div>
+
+                    <div style="background: #110500; border: 1px solid #ff8800; border-radius: 2px; padding: 12px;">
+                        <div style="color: #ff8800; font-size: 12px; line-height: 1.6;">
+                            <strong>⚠ Non-LOGO scenes:</strong> GB Studio deduplicates identical tiles — every tile that looks the same will be swapped at once, not just the one you selected. Plan your graphics accordingly, or use a <strong>LOGO</strong> type scene to avoid this.
                         </div>
                     </div>
 
@@ -519,6 +532,26 @@
                             No more manual coordinate calculations. No more repetitive GBVM code.<br>
                             Just visual selection and instant results!
                         </div>
+                    </div>
+                </div>
+
+                <!-- Tutorial Launch Buttons -->
+                <div style="text-align: center; margin-bottom: 25px; padding: 20px; background: #0a0400; border: 2px solid #ff8800; border-radius: 2px; box-shadow: 0 0 16px rgba(255,136,0,0.2);">
+                    <div style="color: #ff8800; font-size: 13px; font-weight: 600; margin-bottom: 8px; letter-spacing: 0.5px;">Interactive Tutorials</div>
+                    <div style="color: rgba(255,136,0,0.6); font-size: 11px; margin-bottom: 16px;">Step-by-step guides with diagrams — follow along at your own pace.</div>
+                    <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                        <button onclick="closeModal('builderInstructionsModal'); TutorialManager.open('first-swap');"
+                                style="background: #ff8800; color: #000; border: none; padding: 9px 22px; font-size: 11px; font-weight: 700; font-family: 'Source Sans Pro', sans-serif; border-radius: 2px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 0 12px rgba(255,136,0,0.5); transition: all 0.2s;"
+                                onmouseover="this.style.background='#ffaa33'"
+                                onmouseout="this.style.background='#ff8800'">
+                            ⚡ My First Swap
+                        </button>
+                        <button onclick="closeModal('builderInstructionsModal'); TutorialManager.open('plugin');"
+                                style="background: #000; color: #04d9ff; border: 2px solid #04d9ff; padding: 9px 22px; font-size: 11px; font-weight: 700; font-family: 'Source Sans Pro', sans-serif; border-radius: 2px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 0 10px rgba(4,217,255,0.3); transition: all 0.2s;"
+                                onmouseover="this.style.background='rgba(4,217,255,0.1)'"
+                                onmouseout="this.style.background='#000'">
+                            🔌 Plugin Setup
+                        </button>
                     </div>
                 </div>
 
@@ -534,9 +567,9 @@
                     </div>
                     <div style="padding-left: 55px;">
                         <div class="modal-instruction-step">
-                            Click <strong>LEVEL.PNG</strong> to load your level image (WHERE tiles appear on screen).<br>
-                            Click <strong>TILESET.PNG</strong> to load your tile graphics (WHAT tiles to display).<br>
-                            The tileset name auto-fills from the filename.
+                            Click the <strong>LEVEL.PNG</strong> button (top toolbar) to load your background image — this is the scene background you use in GB Studio, showing WHERE tiles will be swapped.<br><br>
+                            Click the <strong>Set 1</strong> button (or your set name) to load your second image — the source of the new tile graphics, showing WHAT will appear after the swap.<br><br>
+                            The tileset name auto-fills from the filename. Avoid spaces, hyphens and underscores in filenames (see Step 9).
                         </div>
                     </div>
                 </div>
@@ -557,7 +590,7 @@
                             When you hover over a Swap in the SWAPS tab, the tool automatically switches to the set that swap was created from — the correct images are always shown.
                         </div>
                         <div class="modal-instruction-step">
-                            <strong>Shared across all sets:</strong> SWAPS and SEQUENCES are global — visible from every set.<br>
+                            <strong>Shared across all sets:</strong> SWAPS are global — visible from every set.<br>
                             <strong>Per-set:</strong> LEVEL.PNG, TILESET.PNG, extra frame images, and animation mode settings.
                         </div>
                     </div>
@@ -600,7 +633,7 @@
                     <div style="padding-left: 55px;">
                         <div class="modal-instruction-step">
                             <strong>BOUNCE (single swap — default)</strong><br>
-                            Click the <strong>⇄ BOUNCE</strong> button (exchange icon) before adding a swap to create a <strong>ping-pong animation</strong> in one swap.<br>
+                            Click the <strong>◄► BOUNCE</strong> button before adding a swap to create a <strong>ping-pong animation</strong> in one swap.<br>
                             Frames play forward then in reverse automatically:<br>
                             • Frame 1 → 2 → 3 → 2 → 1 → 2 → 3 → …<br>
                             Perfect for breathing effects, torches, water, or any looping animation.
@@ -683,104 +716,61 @@
                         <div class="modal-instruction-step">
                             <strong>Code Options</strong><br>
                             Choose <strong>Type</strong> (ts/bg) and <strong>Mode</strong>:<br>
-                            • <strong>TileData</strong>: For use with the TileSwapper plugin (recommended)<br>
-                            • <strong>GBVM</strong>: Standard GBVM scripts if you don't have the plugin
+                            • <strong>TileData</strong>: For use with the <a href="https://github.com/pixelpep/gbtileswaper/releases/" target="_blank" style="color:#04d9ff;">Tile Swaper plugin</a> (recommended)<br>
+                            • <strong>GBVM</strong>: Standard GBVM scripts if you don't use the plugin
                         </div>
                     </div>
                 </div>
 
-                <!-- Step 8: Creating Sequences -->
-                <div style="margin-bottom: 20px; background: #110011; border: 1px solid #FF13F0; border-radius: 2px; padding: 15px;">
-                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-                        <div style="background: #FF13F0; color: #000; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; flex-shrink: 0;">8</div>
-                        <h3 style="color: #FF13F0; font-weight: bold; font-size: 16px; margin: 0;">Creating Sequences</h3>
-                    </div>
-                    <div style="padding-left: 55px;">
-                        <div class="modal-instruction-step">
-                            <strong>What are Sequences?</strong><br>
-                            Sequences let you combine multiple swaps into complex animations or multi-step tile changes. Open the <strong>SEQUENCES</strong> tab to create them.
-                        </div>
-                        <div class="modal-instruction-step">
-                            <strong>Create a Sequence</strong><br>
-                            Enter a sequence name and click <strong>Create Sequence</strong>. Then use <strong>+ Add Swap</strong> to select which swaps to include.
-                        </div>
-                        <div class="modal-instruction-step">
-                            <strong>Frame Breaks (Legacy)</strong><br>
-                            Use <strong>+ Add Frame</strong> to insert frame breaks (|) between swaps. This separates swaps into different animation frames with automatic wait commands in GBVM mode.
-                        </div>
-                        <div class="modal-instruction-step">
-                            <strong>🎬 Animated Swaps in Sequences</strong><br>
-                            Swaps with multiple frames are marked with a <strong style="color: #FF13F0;">➟</strong> icon. When you add animated swaps to a sequence, the frames are <strong>synchronized automatically</strong>!
-                        </div>
-                        <div class="modal-instruction-step">
-                            <strong>How Frame Synchronization Works</strong><br>
-                            Instead of playing all frames of Swap A then all of Swap B, the sequence <strong>groups by frame number</strong>:<br>
-                            • <strong>Sequence Frame 1:</strong> Swap A frame 1 + Swap B frame 1 + Swap C frame 1<br>
-                            • <strong>Sequence Frame 2:</strong> Swap A frame 2 + Swap B frame 2 + Swap C frame 2<br>
-                            • ...and so on!<br>
-                            This creates synchronized animations where all swaps change together.
-                        </div>
-                        <div class="modal-instruction-step">
-                            <strong>Automatic Frame Looping</strong><br>
-                            If swaps have different frame counts, shorter swaps <strong>loop automatically</strong>:<br>
-                            • Swap A has 4 frames, Swap B has 2 → Swap B loops: 1, 2, 1, 2<br>
-                            Perfect for combining different animation speeds!
-                        </div>
-                        <div class="modal-instruction-step">
-                            <strong>Reorder / Edit / Export</strong><br>
-                            Drag <strong>⋮⋮</strong> to reorder items. <strong>Double-click</strong> the sequence name to rename it.<br>
-                            Click <strong>Copy Code</strong> to copy the combined code for the whole sequence.
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Step 9: Loading a Project -->
+                <!-- Step 8: Loading a Project -->
                 <div style="margin-bottom: 20px; background: #001122; border: 1px solid #04d9ff; border-radius: 2px; padding: 15px;">
                     <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-                        <div style="background: #04d9ff; color: #000; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; flex-shrink: 0;">9</div>
+                        <div style="background: #04d9ff; color: #000; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; flex-shrink: 0;">8</div>
                         <h3 style="color: #04d9ff; font-weight: bold; font-size: 16px; margin: 0;">Loading a Project</h3>
                     </div>
                     <div style="padding-left: 55px;">
                         <div class="modal-instruction-step">
                             Click <strong>LOAD GBTS</strong> at the top to load a previously saved .gbts file.<br>
-                            The project restores all sets, swaps, sequences, and images exactly as you left them.
+                            The project restores all sets, swaps, and images exactly as you left them.
                         </div>
                     </div>
                 </div>
 
-                <!-- Step 10: TileSwapper Plugin -->
+                <!-- Step 9: TileSwapper Plugin -->
                 <div style="margin-bottom: 20px; background: #001122; border: 1px solid #04d9ff; border-radius: 2px; padding: 15px;">
                     <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-                        <div style="background: #04d9ff; color: #000; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; flex-shrink: 0;">10</div>
-                        <h3 style="color: #00ff00; font-weight: bold; font-size: 16px; margin: 0;">TileSwapper Plugin for GB Studio</h3>
+                        <div style="background: #04d9ff; color: #000; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; flex-shrink: 0;">9</div>
+                        <h3 style="color: #04d9ff; font-weight: bold; font-size: 16px; margin: 0;">Tile Swaper Plugin for GB Studio</h3>
                     </div>
                     <div style="padding-left: 55px;">
                         <div class="modal-instruction-step">
-                            <strong>What is TileSwapper?</strong><br>
-                            TileSwapper is a GB Studio plugin that lets you dynamically swap tiles during gameplay using the tilesets and code generated by this tool.
+                            The <a href="https://github.com/pixelpep/gbtileswaper/releases/" target="_blank" style="color:#04d9ff;"><strong>Tile Swaper plugin</strong></a> lets you swap tiles dynamically during GB Studio gameplay using the TileData generated by this tool.<br><br>
+                            Download it at: <a href="https://github.com/pixelpep/gbtileswaper/releases/" target="_blank" style="color:#04d9ff;">github.com/pixelpep/gbtileswaper/releases</a>
                         </div>
                         <div class="modal-instruction-step">
-                            <strong>How to Use</strong><br>
-                            1. Generate your tileset and TileData code using this tool<br>
-                            2. Install the TileSwapper plugin in GB Studio<br>
-                            3. Import your tileset PNG into your GB Studio project<br>
-                            4. Use the TileData output to swap tiles at runtime
+                            <strong>Installation</strong><br>
+                            Copy the <strong>Tile Swaper</strong> folder into your GB Studio project's <code style="color:#04d9ff; background:#001a33; padding:1px 4px; border-radius:2px;">plugins/</code> folder (create it at the project root if needed). Restart GB Studio to load the plugin.
                         </div>
                         <div class="modal-instruction-step">
-                            <strong>Find the Plugin</strong><br>
-                            Look for <strong>TileSwapper</strong> in the GB Studio plugin directory or search for plugins by <strong>pixelPep</strong>.
+                            <strong>⚠ Tileset filename rules</strong><br>
+                            Avoid <strong>spaces, hyphens and underscores</strong> in the tileset PNG filename — GB Studio uses them internally and they can break the plugin references.<br>
+                            Use: <code style="color:#04d9ff; background:#001a33; padding:1px 4px; border-radius:2px;">mytileset.png</code> &nbsp;or&nbsp; <code style="color:#04d9ff; background:#001a33; padding:1px 4px; border-radius:2px;">MyTileset.png</code>
                         </div>
                         <div class="modal-instruction-step">
-                            <strong>Don't have the plugin?</strong><br>
-                            Switch the Mode to <strong>GBVM</strong> to generate standard GBVM scripts that work without the plugin. These scripts directly replace tiles on your game screen.
+                            <strong>Register the tileset in your scene</strong><br>
+                            In your scene's <strong>On Init</strong> script, add an empty <strong>GBVM Script</strong> event at the top, click <strong>Add Reference → Tileset</strong> and select your tileset PNG. Without this step, the swap will not work.
+                        </div>
+                        <div class="modal-instruction-step">
+                            <strong>No plugin?</strong><br>
+                            Switch the Mode to <strong>GBVM</strong> in GB Tile Swapper to generate standard GBVM scripts that work without any plugin.
                         </div>
                     </div>
                 </div>
 
-                <!-- Step 11: Saving & Exporting -->
+                <!-- Step 10: Saving & Exporting -->
                 <div style="margin-bottom: 20px; background: #001122; border: 1px solid #04d9ff; border-radius: 2px; padding: 15px;">
                     <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-                        <div style="background: #04d9ff; color: #000; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; flex-shrink: 0;">11</div>
+                        <div style="background: #04d9ff; color: #000; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; flex-shrink: 0;">10</div>
                         <h3 style="color: #04d9ff; font-weight: bold; font-size: 16px; margin: 0;">Saving & Exporting</h3>
                     </div>
                     <div style="padding-left: 55px;">
@@ -793,27 +783,26 @@
                             <strong style="color: #04d9ff; font-size: 13px;">💾 Save Project (.gbts) — Your safety net!</strong><br><br>
                             Click <strong>SAVE</strong> to save your entire project in a single <strong>.gbts file</strong>. Everything is preserved:<br>
                             • All <strong>sets</strong> (images, frame sequences, mode settings)<br>
-                            • All <strong>swaps</strong> with their tile selections and animation frames<br>
-                            • All <strong>sequences</strong><br><br>
+                            • All <strong>swaps</strong> with their tile selections and animation frames<br><br>
                             Reload it anytime with <strong>LOAD GBTS</strong> and pick up exactly where you left off — no image files needed separately.<br>
                             <em style="color: #7af; font-size: 11px;">On Chrome/Edge you can choose the save location. Other browsers download to your default folder.</em>
                         </div>
                         <div class="modal-instruction-step">
                             <strong>Export PNG</strong><br>
                             Click <strong>PNG</strong> to download the tileset image.<br>
-                            Import this PNG into your GB Studio project to use with the TileSwapper plugin.
+                            Place this PNG in your GB Studio project's <code style="color:#04d9ff; background:#001a33; padding:1px 4px; border-radius:2px;">assets/tilesets/</code> folder to use with the <a href="https://github.com/pixelpep/gbtileswaper/releases/" target="_blank" style="color:#04d9ff;">Tile Swaper plugin</a>.
                         </div>
                         <div class="modal-instruction-step">
                             <strong>Export CODE</strong><br>
                             Click <strong>CODE</strong> to download the TileData for all swaps.<br>
-                            Use this data with the TileSwapper plugin to swap tiles during gameplay.
+                            Use this data with the <a href="https://github.com/pixelpep/gbtileswaper/releases/" target="_blank" style="color:#04d9ff;">Tile Swaper plugin</a> to swap tiles during gameplay.
                         </div>
                     </div>
                 </div>
 
                 <!-- Footer and button inside scrollable area -->
                 <div style="text-align: center; color: #00ff00; font-size: 11px; margin-top: 20px; padding: 15px; border-top: 1px solid #003300;">
-                    Free to use - Look for the plugin <strong>TileSwapper</strong> - made by <strong>pixelPep</strong>
+                    Free to use — <a href="https://github.com/pixelpep/gbtileswaper/releases/" target="_blank" style="color:#04d9ff;"><strong>Tile Swaper plugin</strong></a> — made by <strong>pixelPep</strong>
                 </div>
 
                 <button class="modal-close-btn" onclick="closeModal('builderInstructionsModal')" style="margin: 20px auto;">Got it!</button>
@@ -913,6 +902,7 @@
 
     <script src="engine.js"></script>
     <script src="ui.js"></script>
+    <script src="tutorial.js"></script>
 
     
     <!-- Toast Notification -->
@@ -989,6 +979,44 @@
                             onmouseout="this.style.background='#04d9ff';">SAVE GBTS</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         Tutorial Panel — bottom, resizable, orange theme
+         ══════════════════════════════════════════════════════ -->
+    <div id="tutorialPanel" style="display:none;" class="tutorial-panel">
+
+        <!-- Drag-to-resize handle -->
+        <div id="tutorialResizeHandle" class="tutorial-resize-handle" title="Drag to resize"></div>
+
+        <!-- Title bar -->
+        <div class="tutorial-titlebar">
+            <span class="tutorial-label">TUTORIAL</span>
+            <span id="tutorialTitle" class="tutorial-title-text">My First Swap</span>
+            <div class="tutorial-titlebar-right">
+                <span id="tutorialCounter" class="tutorial-counter">1 / 9</span>
+                <div id="tutorialDots" class="tutorial-dots"></div>
+                <button id="tutorialMinBtn" class="tutorial-icon-btn" onclick="TutorialManager.toggleMinimize()" title="Minimize">▼</button>
+                <button class="tutorial-icon-btn tutorial-close-btn" onclick="TutorialManager.close()" title="Close">×</button>
+            </div>
+        </div>
+
+        <!-- Body -->
+        <div id="tutorialBody" class="tutorial-body">
+
+            <!-- SVG area -->
+            <div id="tutorialSvg" class="tutorial-svg-area"></div>
+
+            <!-- Text + nav -->
+            <div class="tutorial-content-area">
+                <div id="tutorialText" class="tutorial-text"></div>
+                <div class="tutorial-nav">
+                    <button id="tutorialPrevBtn" class="tutorial-nav-btn" onclick="TutorialManager.prev()">← Back</button>
+                    <button id="tutorialNextBtn" class="tutorial-nav-btn tutorial-nav-next" onclick="TutorialManager.next()">Next →</button>
+                </div>
+            </div>
+
         </div>
     </div>
 

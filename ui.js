@@ -1550,7 +1550,7 @@
                                           ondblclick="editGroupName(${groupIndex}, event)"
                                           style="cursor: text;"
                                           title="Double-click to edit">${group.name}</span>
-                                    ${group.frames > 1 ? '<span style="display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; background: #04d9ff; border-radius: 50%; color: #000; font-size: 11px; line-height: 16px; margin-left: 5px;">➟</span>' : ''}
+                                    ${group.frames > 1 ? '<span style="display: inline-flex; align-items: center; justify-content: center; padding: 0 4px; height: 14px; background: rgba(4,217,255,0.15); border: 1px solid #04d9ff; border-radius: 3px; color: #04d9ff; font-size: 9px; font-weight: 700; letter-spacing: -1px; line-height: 14px; margin-left: 5px; font-family: sans-serif;">▶▶</span>' : ''}
                                     <span style="color: #0399aa; font-size: 10px;">${displayInfo}</span>
                                 </div>
                             </div>
@@ -4438,6 +4438,7 @@
             }
 
             const payload = {
+                session_id: 'anonymous',
                 type: type,
                 message: message,
                 rating: type === 'rating' ? feedbackSelectedRating : undefined,
@@ -5407,44 +5408,18 @@
             // Extract source tile pixel data
             const srcData = group.img1Tiles.map(t => extractTile(t.col, t.row));
 
-            // Compute offsets of each tile relative to the first (anchor) tile
-            const anchorCol = group.img1Tiles[0].col;
-            const anchorRow = group.img1Tiles[0].row;
-            const offsets   = group.img1Tiles.map(t => ({ dc: t.col - anchorCol, dr: t.row - anchorRow }));
-            const anchorSrc = srcData[0];
-
-            // Scan level for the anchor tile, then verify the full group pattern at each match.
-            // This correctly handles identical-looking tiles within a group and avoids partial matches.
+            // Scan every tile position in the level
             const mappings = group.img1Tiles.map(() => []);
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
-                    // Quick anchor check first
-                    const anchorTile = extractTile(c, r);
-                    let anchorMatch = true;
-                    for (let p = 0; p < anchorSrc.length; p++) {
-                        if (anchorTile[p] !== anchorSrc[p]) { anchorMatch = false; break; }
-                    }
-                    if (!anchorMatch) continue;
-
-                    // Anchor matches — verify all other tiles in the group at their relative positions
-                    let groupMatch = true;
-                    for (let i = 1; i < srcData.length; i++) {
-                        const tc = c + offsets[i].dc;
-                        const tr = r + offsets[i].dr;
-                        if (tc < 0 || tc >= cols || tr < 0 || tr >= rows) { groupMatch = false; break; }
-                        const otherTile = extractTile(tc, tr);
+                    const levelTile = extractTile(c, r);
+                    for (let i = 0; i < srcData.length; i++) {
                         const src = srcData[i];
+                        let match = true;
                         for (let p = 0; p < src.length; p++) {
-                            if (otherTile[p] !== src[p]) { groupMatch = false; break; }
+                            if (levelTile[p] !== src[p]) { match = false; break; }
                         }
-                        if (!groupMatch) break;
-                    }
-
-                    // Full pattern matched — record all tile positions
-                    if (groupMatch) {
-                        for (let i = 0; i < srcData.length; i++) {
-                            mappings[i].push({ col: c + offsets[i].dc, row: r + offsets[i].dr });
-                        }
+                        if (match) { mappings[i].push({ col: c, row: r }); break; }
                     }
                 }
             }
