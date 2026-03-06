@@ -2,6 +2,8 @@
 
 **➜ [Try it live](https://gbtileswaper.pixelpep.com/)**
 
+![GB Tile Swapper](gbts-screenshot-01.png)
+
 A web-based visual tool for creating tile animations and tile-swap effects in **GB Studio** projects. Select tiles visually, generate tilesets, and export ready-to-use GBVM/TileData code — no manual coordinate math required.
 
 ---
@@ -46,7 +48,7 @@ A web-based visual tool for creating tile animations and tile-swap effects in **
 - Tileset preview shows the generated tileset (20 tiles per row), also resizable
 
 ### Code Export
-- **TileData** mode: output for the [TileSwapper plugin](https://github.com/pixelpep) (recommended)
+- **TileData** mode: output for the [TileSwapper plugin](https://github.com/pixelpep/releases/) (recommended)
 - **GBVM** mode: standard GBVM scripts for use without the plugin
 - Type selector: `ts` (tileset) or `bg` (background)
 
