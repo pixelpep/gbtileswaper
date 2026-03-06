@@ -46,7 +46,7 @@ A web-based visual tool for creating tile animations and tile-swap effects in **
 - Tileset preview shows the generated tileset (20 tiles per row), also resizable
 
 ### Code Export
-- **TileData** mode: output for the [TileSwapper plugin](https://github.com/pixelpep/releases/) (recommended)
+- **TileData** mode: output for the [TileSwapper plugin](https://github.com/pixelpep/gbtileswaper/releases) (recommended)
 - **GBVM** mode: standard GBVM scripts for use without the plugin
 - Type selector: `ts` (tileset) or `bg` (background)
 
