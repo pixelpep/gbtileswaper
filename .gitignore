@@ -13,3 +13,6 @@ _archive/
 scnlab.gbts
 ui_raw.js
 gbts.htm
+
+# Local scripts
+push-public.sh
